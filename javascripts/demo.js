@@ -3,7 +3,7 @@ var vbar = new d3x(".wrapper section").data(["61","9","43","31","17"]).nameAxis(
 //hbar
 var hbar = new d3x(".wrapper section").data(["61","9","43","31","17"]).marginTop(50).title("Horizontal Bar").hbar();
 //line
-var chart = new d3x(".wrapper section").data(["61","9","43","31","17"]).nameAxis(true).valueAxis().marginTop(50).title("Line").line();
+var line = new d3x(".wrapper section").data(["61","9","43","31","17"]).nameAxis(true).valueAxis().marginTop(50).title("Line").line();
 //dynamic
 var chart = new d3x().appendTo(".wrapper section")
     .data(function(){
