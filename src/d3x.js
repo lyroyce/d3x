@@ -1,6 +1,5 @@
 !function() {
-    var d3x = d3x || {};
-    d3x = function(selector){
+    var d3x = function(selector){
         this._size = {width:400, height:300};
         this._margin = {top:20, right:20, bottom:50, left:40};
         this._updateElementSize();
@@ -446,11 +445,5 @@
             }
         }
     }
-    if (typeof define === "function" && define.amd) {
-        define(d3);
-    } else if (typeof module === "object" && module.exports) {
-        module.exports = d3;
-    } else {
-        this.d3 = d3;
-    }
+    this.d3x = d3x;
 }();
