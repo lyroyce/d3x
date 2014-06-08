@@ -1,45 +1,26 @@
-    var dataFunc = function(){
-        var numValues = Math.random() * 5 -1;				//Count original length of dataset
-        dataset = [];  						 				//Initialize empty array
-        for (var i = 0; i < numValues; i++) {				//Loop numValues times
-            var newNumber = Math.floor(Math.random() * 25); //New random integer (0-25)
-            dataset.push(newNumber);			 			//Add new number to array
+//vbar
+var vbar = new d3x(".wrapper section").data(["61","9","43","31","17"]).nameAxis().marginTop(50).title("Vertical Bar").vbar();
+//hbar
+var hbar = new d3x(".wrapper section").data(["61","9","43","31","17"]).marginTop(50).title("Horizontal Bar").hbar();
+//line
+var chart = new d3x(".wrapper section").data(["61","9","43","31","17"]).nameAxis(true).valueAxis().marginTop(50).title("Line").line();
+//dynamic
+var chart = new d3x().appendTo(".wrapper section")
+    .data(function(){
+        var numValues = Math.random() * 5;
+        dataset = [];
+        for (var i = 0; i < numValues; i++) {
+            var newNumber = Math.floor(Math.random() * 25);
+            dataset.push(newNumber);
         }
         console.log(dataset);
         return dataset;
-    };
-    //hbar
-    var chart = new d3x(".wrapper section").data(["61","9","43","31","17"]).hbar();
-    var chart = new d3x().appendTo(".wrapper section")
-        .size(400, 400)
-        .margin(50, 20, 120, 100)
-        .data(dataFunc)
-        .nameAxis().valueAxis()
-        .colors("orange")
-        .title("Page Report")
-        .refresh(5000)
-        .hbar();
+    })
+    .margin(50, 20, 50, 50)
+    .nameAxis(true, 'Name').valueAxis(true, 'Value')
+    .title("Dynamic Horizontal Bar")
+    .colors("orange")
+    .refresh(5000)
+    .hbar();
     
-    //vbar
-    var chart = new d3x(".wrapper section").data(["61","9","43","31","17"]).nameAxis().vbar();
-    var chart = new d3x().appendTo(".wrapper section")
-        .size(400, 400)
-        .margin(50, 20, 50, 100)
-        .data(dataFunc)
-        .nameAxis(false, "Page Views")
-        .colors("orange")
-        .title("Page Report")
-        .refresh(5000)
-        .vbar();
     
-    //line
-    var chart = new d3x(".wrapper section").data(["61","9","43","31","17"]).line();
-    var chart = new d3x().appendTo(".wrapper section")
-        .size(400, 400)
-        .margin(50, 20, 120, 100)
-        .data(dataFunc)
-        .nameAxis(false, "Page Views")
-        .colors("orange")
-        .title("Page Report")
-        .refresh(5000)
-        .line();
