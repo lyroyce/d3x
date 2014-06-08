@@ -9,8 +9,8 @@
         return dataset;
     };
     //hbar
-    var chart = new d3x("body").data(["61","9","43","31","17"]).hbar();
-    var chart = new d3x().appendTo("body")
+    var chart = new d3x(".wrapper section").data(["61","9","43","31","17"]).hbar();
+    var chart = new d3x().appendTo(".wrapper section")
         .size(400, 400)
         .margin(50, 20, 120, 100)
         .data(dataFunc)
@@ -21,8 +21,8 @@
         .hbar();
     
     //vbar
-    var chart = new d3x("body").data(["61","9","43","31","17"]).nameAxis().vbar();
-    var chart = new d3x().appendTo("body")
+    var chart = new d3x(".wrapper section").data(["61","9","43","31","17"]).nameAxis().vbar();
+    var chart = new d3x().appendTo(".wrapper section")
         .size(400, 400)
         .margin(50, 20, 50, 100)
         .data(dataFunc)
@@ -33,8 +33,8 @@
         .vbar();
     
     //line
-    var chart = new d3x("body").data(["61","9","43","31","17"]).line();
-    var chart = new d3x().appendTo("body")
+    var chart = new d3x(".wrapper section").data(["61","9","43","31","17"]).line();
+    var chart = new d3x().appendTo(".wrapper section")
         .size(400, 400)
         .margin(50, 20, 120, 100)
         .data(dataFunc)
