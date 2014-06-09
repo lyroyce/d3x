@@ -1,7 +1,7 @@
 !function() {
     var d3x = function(selector){
         this._size = {width:400, height:300};
-        this._margin = {top:20, right:20, bottom:50, left:40};
+        this._margin = {top:20, right:20, bottom:20, left:20};
         this._updateElementSize();
         if(selector) this.appendTo(selector);
         this._data = [];
