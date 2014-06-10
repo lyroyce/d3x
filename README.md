@@ -31,34 +31,113 @@ Demo
 
 API
 -----
-- **appendTo(parent)**
-- **prependTo(parent)**
-- **marginLeft(left)**
-- **size(width, height)**
-- **margin(top, right, bottom, left)**
-- **marginTop(top)**
-- **marginRight(right)**
-- **marginBottom(bottom)**
-- **marginLeft(left)**
+- Data
 
-- **data(data)**
-- **name(getNameFunc)**
-- **value(getValueFunc)**
+    - **data(data)**
 
-- **color(colorArray)**
-- **title(title)**
-- **ratio(ratio)**
-- **nameAxis(tickEnabled, label)**
-- **valueAxis(tickEnabled, label)**
-- **refresh()**
+        Set the dataset of the chart. `data` could be an array, a function that returns an array, or an URL that returns a JSON array.
 
-- **elements()**
-- **selectAll(selector)**
-- **select(selector)**
-- **append(selector)**
-- **insert(selector, before)**
-- **selectOrAppend(selector, append, before)**
+    - **name(getNameFunc)**
 
-- **hbar()**
-- **vbar()**
-- **line()**
+        Set the conversion function of data name, which is used to get the name of each data element.
+
+    - **value(getValueFunc)**
+
+        Set the conversion function of data value, which is used to get the value of each data element.
+
+- Position & Size
+
+    - **appendTo(parent)**
+        
+        Append the chart to the HTML element specified by `parent` selector.
+
+    - **prependTo(parent)**
+
+        Prepend the chart to the HTML element specified by `parent` selector.
+
+    - **size(width, height)**
+
+        Set the width and height of the chart.
+
+    - **margin(top, right, bottom, left)**
+
+        Set the margin of the chart.
+
+    - **marginTop(top)**
+
+        Set the margin of the chart.
+
+    - **marginRight(right)**
+
+        Set the margin of the chart.
+
+    - **marginBottom(bottom)**
+
+        Set the margin of the chart.
+
+    - **marginLeft(left)**
+
+        Set the margin of the chart.
+
+- Display & Effect
+
+    - **color(color)**
+    
+        Set the color of the chart. `color` could be CSS color or an array of CSS color.
+
+    - **title(title)**
+
+        Set the title of the chart.
+        
+    - **ratio(ratio)**
+
+        Set the display ratio of the chart.
+        
+    - **nameAxis(tickEnabled, label)**
+
+        Display name axis and set the tick and label of the axis.
+        
+    - **valueAxis(tickEnabled, label)**
+
+        Display value axis and set the tick and label of the axis.
+        
+    - **refresh(interval)**
+
+        Redraw the chart after the specified interval. Dataset will be reloaded before each redraw.
+        
+- UI Elements
+
+    - **elements()**
+        
+        Select the element groups corresponding to current dataset.
+        
+    - **selectAll(selector)**
+        
+        Selects all elements that match the specified selector.
+        
+    - **select(selector)**
+    
+        Selects the first element that matches the specified selector.
+        
+    - **append(selector)**
+    
+        Appends a new element with the specified name as the last child of the chart.
+    
+    - **insert(selector, before)**
+    
+        Inserts a new element with the specified name before the element matching the specified before selector.
+   
+- Chart Type     
+
+    - **hbar()**
+        
+        Render a horizontal bar chart.
+        
+    - **vbar()**
+    
+        Render a vertical bar chart.
+        
+    - **line()**
+    
+        Render a line chart.
+        
