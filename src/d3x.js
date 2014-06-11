@@ -177,16 +177,16 @@
         return this;
     }
     d3x.prototype._loadDataAndRender = function(done){
-        var that = this;
-        this._loadData(function(){
-            that._render();
-            if(done) done();
-        });
+    	if(d3x.isActive===false) done();
+    	else{
+	        var that = this;
+	        this._loadData(function(){
+	            that._render();
+	            if(done) done();
+	        });
+    	}
     }
     d3x.prototype._render = function(){
-        this._renderCommon();
-    }
-    d3x.prototype._renderCommon = function(){
         this._updateNameAxis();
         this._updateValueAxis();
         this.selectAll(".axis path, .axis line").style("fill", "none").style("stroke", "#000");
@@ -445,5 +445,7 @@
             }
         }
     }
+    window.onfocus = function () { d3x.isActive = true; }; 
+    window.onblur = function () { d3x.isActive = false; }; 
     this.d3x = d3x;
 }();
