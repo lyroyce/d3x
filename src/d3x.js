@@ -1,6 +1,5 @@
 !function() {
     var d3x = function(selector){
-        this._size = {width:400, height:300};
         this._margin = {top:20, right:20, bottom:20, left:20};
         this._data = [];
         this._renderer = null;
@@ -9,7 +8,6 @@
         if(selector) this.appendTo(selector);
     }
     d3x.prototype.size = function(width, height){
-        this._size = {width:width, height:height};
         if(this._container) this._container.attr("width", width).attr("height", height);
         this._updateCanvasSize();
         return this;
