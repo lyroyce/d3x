@@ -2,16 +2,16 @@
     var d3x = function(selector){
         this._size = {width:400, height:300};
         this._margin = {top:20, right:20, bottom:20, left:20};
-        this._updateElementSize();
-        if(selector) this.appendTo(selector);
         this._data = [];
         this._renderer = null;
         this._colors = ["steelblue", "darkorange"];
         this._ratio = 0.6;
+        if(selector) this.appendTo(selector);
     }
     d3x.prototype.size = function(width, height){
-        this._size = {width:width, height:height}
-        this._updateElementSize();
+        this._size = {width:width, height:height};
+        if(this._container) this._container.attr("width", width).attr("height", height);
+        this._updateCanvasSize();
         return this;
     }
     d3x.prototype.margin = function(top, right, bottom, left){
@@ -19,27 +19,27 @@
         if(right) this._margin.right = right;
         if(bottom) this._margin.bottom = bottom;
         if(left) this._margin.left = left;
-        this._updateElementSize();
+        this._updateCanvasSize();
         return this;
     }
     d3x.prototype.marginTop = function(top){
         this._margin.top = top;
-        this._updateElementSize();
+        this._updateCanvasSize();
         return this;
     }
     d3x.prototype.marginRight = function(right){
         this._margin.right = right;
-        this._updateElementSize();
+        this._updateCanvasSize();
         return this;
     }
     d3x.prototype.marginBottom = function(bottom){
         this._margin.bottom = bottom;
-        this._updateElementSize();
+        this._updateCanvasSize();
         return this;
     }
     d3x.prototype.marginLeft = function(left){
         this._margin.left = left;
-        this._updateElementSize();
+        this._updateCanvasSize();
         return this;
     }
     d3x.prototype.prependTo = function(parent){
@@ -52,14 +52,15 @@
         this._container = d3.select(parent).insert("svg", before).classed("chart", true);
         this._canvas = this._container.append("g").classed("canvas", true);
         this._canvas.append('g').classed('elements', true);
-        this._updateElementSize();
+        this._updateCanvasSize();
         return this;
     }
-    d3x.prototype._updateElementSize = function(){
-        this._canvasSize = {width: this._size.width-this._margin.left-this._margin.right, 
-            height: this._size.height-this._margin.top-this._margin.bottom};
-        if(this._container) this._container.attr("width", this._size.width).attr("height", this._size.height);
-        if(this._canvas) this._canvas.attr("transform", "translate(" + this._margin.left + "," + this._margin.top + ")");
+    d3x.prototype._updateCanvasSize = function(){
+    	if(this._canvas){
+    		this._canvasSize = {width: this._container[0][0].clientWidth-this._margin.left-this._margin.right, 
+            	height: this._container[0][0].clientHeight-this._margin.top-this._margin.bottom};
+            this._canvas.attr("transform", "translate(" + this._margin.left + "," + this._margin.top + ")");
+    	}
     }
     d3x.prototype.data = function(data, getName, getValue){
         if(Array.isArray(data)){
