@@ -1,9 +1,9 @@
 //vbar
-var vbar = new d3x(".wrapper section").data(["61","9","43","31","17"]).marginTop(40).marginLeft(40).nameAxis().title("Vertical Bar").vbar();
+var vbar = new d3x(".wrapper section").size("100%",400).data(["61","9","43","31","17"]).marginTop(40).marginLeft(40).nameAxis().title("Vertical Bar").vbar();
 //hbar
-var hbar = new d3x(".wrapper section").data(["61","9","43","31","17"]).marginTop(40).marginLeft(40).nameAxis().valueAxis().title("Horizontal Bar").hbar();
+var hbar = new d3x(".wrapper section").size("100%",400).data(["61","9","43","31","17"]).marginTop(40).marginLeft(40).nameAxis().valueAxis().title("Horizontal Bar").hbar();
 //line
-var line = new d3x(".wrapper section").data(["61","9","43","31","17"]).marginTop(40).marginLeft(40).nameAxis(true).valueAxis(true).title("Line").line();
+var line = new d3x(".wrapper section").size("100%",400).data(["61","9","43","31","17"]).marginTop(40).marginLeft(40).nameAxis(true).valueAxis(true).title("Line").line();
 //custom
 var dataFunc = function(){
     var numValues = Math.random() * 5,
@@ -15,6 +15,7 @@ var dataFunc = function(){
     return dataset;
 }
 var chart = new d3x().appendTo(".wrapper section")
+    .size("100%",400)
     .data(dataFunc)
     .name(function(d,i){return d.name;})
     .value(function(d,i){return d.count;})
