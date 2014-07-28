@@ -18,7 +18,7 @@ var hbar = new d3x(".wrapper > section")
 //line
 var line = new d3x(".wrapper > section")
     .size("100%",400)
-    .marginTop(50).marginLeft(40)
+    .marginTop(40).marginLeft(50)
     .data([{"name":"Jan", "value": "61"},{"name":"Feb", "value": "75"},{"name":"Mar", "value": "99"},{"name":"Apr", "value": "93"},{"name":"May", "value": "125"}])
     .name(function(d,i){return d.name;})
     .value(function(d,i){return +d.value;})
