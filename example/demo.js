@@ -1,12 +1,12 @@
 //vbar
-var vbar = new d3x("#customerTrend")
+var vbar = new d3x(".wrapper > section")
     .size("100%",400)
     .data(["61","9","43","31","17"])
     .marginTop(40).marginLeft(40)
     .title("Vertical Bar")
     .vbar();
 //hbar
-var hbar = new d3x("#customerTrend")
+var hbar = new d3x(".wrapper > section")
     .size("100%",400)
     .marginTop(40).marginLeft(40)
     .data([{"name":"2012", "value": 61},{"name":"2013", "value": 75},{"name":"2014", "value": 99}])
@@ -16,7 +16,7 @@ var hbar = new d3x("#customerTrend")
     .title("Horizontal Bar")
     .hbar();
 //line
-var line = new d3x("#customerTrend")
+var line = new d3x(".wrapper > section")
     .size("100%",400)
     .marginTop(40).marginLeft(40)
     .data(["61","9","43","31","17"])
@@ -34,7 +34,7 @@ var dataFunc = function(){
     }
     return dataset;
 }
-var chart = new d3x().appendTo("#customerTrend")
+var chart = new d3x().appendTo(".wrapper > section")
     .size("100%",400)
     .data(dataFunc)
     .name(function(d,i){return d.name;})
