@@ -448,7 +448,7 @@
                     return labelElement.attr("transform", "rotate(-90)")
                         .attr("x", -this._canvasSize.height/2)
                         .attr("y", -10)
-                        .attr("dy", "-1em");
+                        .attr("dy", "-2em");
                 case "top":
                     return labelElement.attr("x", this._canvasSize.width/2)
                         .attr("y", -10)
