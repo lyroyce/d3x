@@ -176,7 +176,8 @@
         return this;
     }
     d3x.prototype._loadDataAndRender = function(done){
-    	if(d3x.isActive===false) done();
+    	if(d3x.isActive===false) 
+    		if(done) done();
     	else{
 	        var that = this;
 	        this._loadData(function(){
