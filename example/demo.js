@@ -3,7 +3,7 @@ var vbar = new d3x(".wrapper > section")
     .size("100%",400)
     .data(["61","9","43","31","17"])
     .marginTop(40).marginLeft(40)
-    .title("Vertical Bar")
+    .title("Vertical Bar Chart")
     .vbar();
 //hbar
 var hbar = new d3x(".wrapper > section")
@@ -13,7 +13,7 @@ var hbar = new d3x(".wrapper > section")
     .name(function(d,i){return d.name;})
     .value(function(d,i){return d.value;})
     .nameAxis().valueAxis()
-    .title("Horizontal Bar")
+    .title("Horizontal Bar Chart with Axises")
     .hbar();
 //line
 var line = new d3x(".wrapper > section")
@@ -24,7 +24,7 @@ var line = new d3x(".wrapper > section")
     .value(function(d,i){return +d.value;})
     .nameAxis(true, "Name")
     .valueAxis(true, "Value")
-    .title("Line")
+    .title("Line Chart with Axises/Ticks/Labels")
     .line();
 //custom
 var dataFunc = function(){
@@ -43,7 +43,7 @@ var chart = new d3x().appendTo(".wrapper > section")
     .value(function(d,i){return d.count;})
     .margin(40, 20, 50, 40)
     .nameAxis(true, "Index").valueAxis(true, "Count")
-    .title("Auto Refreshed Chart")
+    .title("Auto Refreshed Bar Chart with Color Customized")
     .colors("darkorange", "lightgray", "dimgray", "#333")
     .refresh(5000)
     .hbar();
