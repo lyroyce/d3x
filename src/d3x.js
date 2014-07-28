@@ -5,6 +5,7 @@
         this._renderer = null;
         this._colors = ["darkorange", "black", "black"];
         this._ratio = 0.6;
+        this._canvasSize = {};
         if(selector) this.appendTo(selector);
     }
     d3x.prototype.size = function(width, height){
@@ -54,7 +55,7 @@
         return this;
     }
     d3x.prototype._updateCanvasSize = function(){
-        if(this._canvas){
+        if(this._canvas && this._container[0][0]){
             this._canvasSize = {width: this._container[0][0].clientWidth-this._margin.left-this._margin.right, 
                 height: this._container[0][0].clientHeight-this._margin.top-this._margin.bottom};
             this._canvas.attr("transform", "translate(" + this._margin.left + "," + this._margin.top + ")");
