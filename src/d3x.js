@@ -3,7 +3,7 @@
         this._margin = {top:20, right:20, bottom:20, left:20};
         this._data = [];
         this._renderer = null;
-        this._colors = ["darkorange", "black"];
+        this._colors = ["darkorange", "black", "black"];
         this._ratio = 0.6;
         if(selector) this.appendTo(selector);
     }
@@ -94,11 +94,9 @@
         }
         return this;
     }
-    d3x.prototype.colors = function(colors){
-        if(typeof(colors) == "string"){
-            this._colors[0] = colors;
-        }else if(Array.isArray(colors)){
-            this._colors = colors;
+    d3x.prototype.colors = function(){
+        for(var i in arguments){
+            if(i<this._colors.length) this._colors[i] = arguments[i];
         }
         return this;
     }
@@ -189,9 +187,9 @@
         return this;
     }
     d3x.prototype._loadDataAndRender = function(done){
-        if(d3x.isActive===false) 
+        if(d3x.isActive===false){ 
             if(done) done();
-        else{
+        }else{
             var that = this;
             this._loadData(function(){
                 that._render();
@@ -202,7 +200,7 @@
     d3x.prototype._render = function(){
         this._updateNameAxis();
         this._updateValueAxis();
-        this.selectAll(".axis path, .axis line").style("fill", "none");
+        this.selectAll(".axis path, .axis line").style("fill", "none").style('stroke', this.getColor(2));
     
         this.elements().exit().style("opacity", 1).remove(); // remove immediately
         var element = this.elements().enter().append("g").classed("element",true);
@@ -389,7 +387,8 @@
             .domain([0, d3.max(this._data, this._getValue)])
             .range(range);
         this._valueAxis.scale(this._valueScale).orient(orient).ticks(maxRange/50);
-        this.selectAll("g.value.axis").transition().duration(500).call(this._valueAxis);
+        this.selectAll("g.value.axis").transition().duration(500).call(this._valueAxis)
+            .selectAll(".tick text").style('fill',this.getColor(1));
         return this;
     }
     d3x.prototype._updateNameAxis = function(){
