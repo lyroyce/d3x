@@ -3,7 +3,7 @@
         this._margin = {top:20, right:20, bottom:20, left:20};
         this._data = [];
         this._renderer = null;
-        this._colors = ["darkorange", "black", "black"];
+        this._colors = ["darkorange"];
         this._ratio = 0.6;
         this._canvasSize = {};
         if(selector) this.appendTo(selector);
@@ -98,14 +98,15 @@
     d3x.prototype.colors = function(){
         for(var i in arguments){
             if(i<this._colors.length) this._colors[i] = arguments[i];
+            else this._colors.push(arguments[i]);
         }
         return this;
     }
     d3x.prototype.getColor = function(index){
-        if(this._colors.length>0){
-            return this._colors[index%this._colors.length];
+        if(index < this._colors.length){
+            return this._colors[index];
         }else{
-            return 'darkorange';
+            return 'black';
         }
     }
     d3x.prototype.title = function(title){
@@ -201,7 +202,7 @@
     d3x.prototype._render = function(){
         this._updateNameAxis();
         this._updateValueAxis();
-        this.selectAll(".axis path, .axis line").style("fill", "none").style('stroke', this.getColor(2));
+        this.selectAll(".axis path, .axis line").style("fill", "none").style('stroke', this.getColor(1));
     
         this.elements().exit().style("opacity", 1).remove(); // remove immediately
         var element = this.elements().enter().append("g").classed("element",true);
@@ -231,8 +232,9 @@
         });
     }
     d3x.prototype._appendTitle = function(){
-        this._titleElement = this.append("text").classed("title", true).style("text-anchor", "middle")
-                .attr("x", this._canvasSize.width/2).attr("y", "-1em").text(this._titleLabel);
+        this._titleElement = this.append("text").classed("title", true)
+            .style("text-anchor", "middle").style('fill', this.getColor(3))
+            .attr("x", this._canvasSize.width/2).attr("y", "-1em").text(this._titleLabel);
     }
     d3x.prototype._appendTooltip = function(){
         this._tooltip = this.append("g").classed("tooltip", true).style("opacity", 0);
@@ -389,7 +391,7 @@
             .range(range);
         this._valueAxis.scale(this._valueScale).orient(orient).ticks(maxRange/50);
         this.selectAll("g.value.axis").transition().duration(500).call(this._valueAxis)
-            .selectAll(".tick text").style('fill',this.getColor(1));
+            .selectAll(".tick text").style('fill',this.getColor(2));
         return this;
     }
     d3x.prototype._updateNameAxis = function(){
@@ -413,7 +415,7 @@
         this._nameAxis.scale(this._nameScale).orient(orient).ticks(this._data.length);
         var that = this;
         this.selectAll("g.name.axis").transition().duration(500).call(this._nameAxis)
-            .selectAll(".tick text").style('fill',this.getColor(1)).each(function(){
+            .selectAll(".tick text").style('fill',this.getColor(2)).each(function(){
                 if(orient=="bottom" && this.clientWidth>=that._nameTickSpacing)
                     d3.select(this).style("text-anchor", "end")
                         .attr("transform", "rotate(-60)");
@@ -435,7 +437,8 @@
             .attr("class", classed)
             .attr("transform", "translate(" + this._calcAxisPosition(orient) + ")");
         if(label){
-            var labelElement = axis.append("text").text(label).style("text-anchor", "middle");
+            var labelElement = axis.append("text").text(label)
+                .style("text-anchor", "middle").style('fill', this.getColor(3));
             switch (orient) {
                 case "bottom":
                     return labelElement.attr("x", this._canvasSize.width/2)
