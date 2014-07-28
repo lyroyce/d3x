@@ -3,7 +3,7 @@
         this._margin = {top:20, right:20, bottom:20, left:20};
         this._data = [];
         this._renderer = null;
-        this._colors = ["steelblue", "darkorange"];
+        this._colors = ["darkorange", "black"];
         this._ratio = 0.6;
         if(selector) this.appendTo(selector);
     }
@@ -54,11 +54,11 @@
         return this;
     }
     d3x.prototype._updateCanvasSize = function(){
-    	if(this._canvas){
-    		this._canvasSize = {width: this._container[0][0].clientWidth-this._margin.left-this._margin.right, 
-            	height: this._container[0][0].clientHeight-this._margin.top-this._margin.bottom};
+        if(this._canvas){
+            this._canvasSize = {width: this._container[0][0].clientWidth-this._margin.left-this._margin.right, 
+                height: this._container[0][0].clientHeight-this._margin.top-this._margin.bottom};
             this._canvas.attr("transform", "translate(" + this._margin.left + "," + this._margin.top + ")");
-    	}
+        }
     }
     d3x.prototype.data = function(data, getName, getValue){
         if(Array.isArray(data)){
@@ -95,9 +95,19 @@
         return this;
     }
     d3x.prototype.colors = function(colors){
-        if(typeof(colors) == "string") colors = [colors];
-        this._colors = colors;
+        if(typeof(colors) == "string"){
+            this._colors[0] = colors;
+        }else if(Array.isArray(colors)){
+            this._colors = colors;
+        }
         return this;
+    }
+    d3x.prototype.getColor = function(index){
+        if(this._colors.length>0){
+            return this._colors[index%this._colors.length];
+        }else{
+            return 'darkorange';
+        }
     }
     d3x.prototype.title = function(title){
         this._titleLabel = title;
@@ -165,31 +175,34 @@
         if(isNaN(interval)){
             this._loadDataAndRender();
         }else{
-            if(this._refreshHandle) clearTimeout(this._refreshHandle);
+            this._refreshInterval = interval;
+        }
+        if(this._refreshInterval){
+            clearTimeout(this._refreshHandle);
             var that = this;
             this._refreshHandle = setTimeout(function(){
                 that._loadDataAndRender(function(){
-                    that.refresh(interval);
+                    that.refresh();
                 });
-            }, interval);
+            }, this._refreshInterval);
         }
         return this;
     }
     d3x.prototype._loadDataAndRender = function(done){
-    	if(d3x.isActive===false) 
-    		if(done) done();
-    	else{
-	        var that = this;
-	        this._loadData(function(){
-	            that._render();
-	            if(done) done();
-	        });
-    	}
+        if(d3x.isActive===false) 
+            if(done) done();
+        else{
+            var that = this;
+            this._loadData(function(){
+                that._render();
+                if(done) done();
+            });
+        }
     }
     d3x.prototype._render = function(){
         this._updateNameAxis();
         this._updateValueAxis();
-        this.selectAll(".axis path, .axis line").style("fill", "none").style("stroke", "#000");
+        this.selectAll(".axis path, .axis line").style("fill", "none");
     
         this.elements().exit().style("opacity", 1).remove(); // remove immediately
         var element = this.elements().enter().append("g").classed("element",true);
@@ -258,7 +271,7 @@
         this._onEnter = function(element, background){
             background.attr("width", that._canvasSize.width)
             element.append("rect").classed("shape", true).attr("width", 0)
-                .style("fill", function(d,i){return that._colors[i%that._colors.length]});
+                .style("fill", function(d,i){return that.getColor(0)});
         }
         this._onRender = function(elements, backgrounds){
             var padding = that._nameTickSpacing * (1-that._ratio);
@@ -293,7 +306,7 @@
         this._onEnter = function(element, background){
             background.attr("height", that._canvasSize.height);
             element.append("rect").classed("shape", true).attr("y", that._canvasSize.height).attr("height", 0)
-                .style("fill", function(d,i){return that._colors[i%that._colors.length]});
+                .style("fill", function(d,i){return that.getColor(0)});
         }
         this._onRender = function(elements, backgrounds){
             var padding = that._nameTickSpacing * (1-that._ratio);
@@ -330,7 +343,7 @@
         this._onEnter = function(element, background){
             background.attr("height", that._canvasSize.height);
             element.append("circle").attr("r", that._pointRadius).attr("class", "point")
-                .style("fill", that._colors[0]);
+                .style("fill", that.getColor(0));
         }
         this._onRender = function(elements, backgrounds){
             backgrounds.transition().duration(500)
@@ -344,7 +357,7 @@
                     .x(this._scaleName(this._nameScaleType=="linear"?0:this._nameTickSpacing/2))
                     .y(that._scaleValue());
                 that.selectOrAppend("path.line", "svg:path", ":first-child").attr("class", "line")
-                    .style("fill", "none").style("stroke", this._colors[0]).style("stroke-width", this._pointRadius/1.5)
+                    .style("fill", "none").style("stroke", this.getColor(0)).style("stroke-width", this._pointRadius/1.5)
                     .data([that._data]).transition().duration(500)
                     .attr("d", line);
             }else{
@@ -400,7 +413,7 @@
         this._nameAxis.scale(this._nameScale).orient(orient).ticks(this._data.length);
         var that = this;
         this.selectAll("g.name.axis").transition().duration(500).call(this._nameAxis)
-            .selectAll(".tick text").each(function(){
+            .selectAll(".tick text").style('fill',this.getColor(1)).each(function(){
                 if(orient=="bottom" && this.clientWidth>=that._nameTickSpacing)
                     d3.select(this).style("text-anchor", "end")
                         .attr("transform", "rotate(-60)");
