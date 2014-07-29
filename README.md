@@ -33,9 +33,9 @@ API
 -----
 - Data
 
-    - **data(data)**
+    - **data(data, dataLoaded)**
 
-        Set the dataset of the chart. `data` could be an array, a function that returns an array, or an URL that returns a JSON array.
+        Set the dataset of the chart. `data` could be an array, a function that returns an array, or an Web Service endpoint that returns a JSON array. `dataLoaded` is an optional function used to receive and process the real data array each time the chart is refreshed.
 
     - **name(getNameFunc)**
 
@@ -81,9 +81,9 @@ API
 
 - Display & Effect
 
-    - **color(color)**
+    - **color(chartColor, axisColor, tickTextColor, LabelColor)**
     
-        Set the color of the chart. `color` could be CSS color or an array of CSS color.
+        Set the color of the chart. `chartColor` default to `darkorange`, other colors default to `black`.
 
     - **title(title)**
 
