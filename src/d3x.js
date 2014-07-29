@@ -61,7 +61,7 @@
             this._canvas.attr("transform", "translate(" + this._margin.left + "," + this._margin.top + ")");
         }
     }
-    d3x.prototype.data = function(data, getName, getValue){
+    d3x.prototype.data = function(data, dataLoaded){
         if(Array.isArray(data)){
             this._data = data;
         }else if(typeof(data) == "function"){
@@ -69,8 +69,7 @@
         }else if(typeof(data) == "string"){
             this._dataUrl = data;
         }
-        this.value(getValue);
-        this.name(getName);
+        this._dataLoaded = dataLoaded;
         return this;
     }
     d3x.prototype.value = function(getValue){
@@ -158,16 +157,18 @@
         return function(){ return that._valueScale(that._getValue.apply(null, arguments))*(multiplier?multiplier:1) + (diff?diff:0); };
     }
     d3x.prototype._loadData = function(done){
-        if(typeof(this._dataFunc) == "function"){
-            this._data = this._dataFunc();
-            if(done) done();
-        }else if(typeof(this._dataUrl) == "string"){
+        if(typeof(this._dataUrl) == "string"){
             var that = this;
             d3.json(this._dataUrl, function(data){
                 that._data = data;
+                if(that._dataLoaded) that._dataLoaded(that._data);
                 if(done) done();
             });
         }else{
+            if(typeof(this._dataFunc) == "function"){
+                this._data = this._dataFunc();
+            }
+            if(this._dataLoaded) this._dataLoaded(this._data);
             if(done) done();
         }
     }
