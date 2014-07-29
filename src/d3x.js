@@ -70,6 +70,8 @@
             this._dataUrl = data;
         }
         this._dataLoaded = dataLoaded;
+        this.name();
+        this.value();
         return this;
     }
     d3x.prototype.value = function(getValue){
