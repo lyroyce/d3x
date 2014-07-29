@@ -178,16 +178,13 @@
         if(isNaN(interval)){
             this._loadDataAndRender();
         }else{
-            this._refreshInterval = interval;
-        }
-        if(this._refreshInterval){
             clearTimeout(this._refreshHandle);
             var that = this;
             this._refreshHandle = setTimeout(function(){
                 that._loadDataAndRender(function(){
-                    that.refresh();
+                    that.refresh(interval);
                 });
-            }, this._refreshInterval);
+            }, interval);
         }
         return this;
     }
