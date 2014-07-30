@@ -49,15 +49,18 @@
     }
     d3x.prototype._newSvg = function(parent, before){
         this._container = d3.select(parent).insert("svg", before).classed("chart", true);
+        this._svg = this._container[0][0];
         this._canvas = this._container.append("g").classed("canvas", true);
         this._canvas.append('g').classed('elements', true);
         this._updateCanvasSize();
         return this;
     }
     d3x.prototype._updateCanvasSize = function(){
-        if(this._canvas && this._container[0][0]){
-            this._canvasSize = {width: this._container[0][0].clientWidth-this._margin.left-this._margin.right, 
-                height: this._container[0][0].clientHeight-this._margin.top-this._margin.bottom};
+        if(this._svg && this._canvas){
+            var clientWidth = this._svg.clientWidth || window.getComputedStyle(this._svg).width.slice(0, -2),
+                clientHeight = this._svg.clientHeight || window.getComputedStyle(this._svg).height.slice(0, -2);
+            this._canvasSize = {width: clientWidth-this._margin.left-this._margin.right, 
+                height: clientHeight-this._margin.top-this._margin.bottom};
             this._canvas.attr("transform", "translate(" + this._margin.left + "," + this._margin.top + ")");
         }
     }
@@ -75,7 +78,7 @@
         return this;
     }
     d3x.prototype.value = function(getValue){
-        this.__getValue = getValue;
+        if(getValue) this.__getValue = getValue;
         if(!this._getValue){
             var that = this;
             this._getValue = function(d,i){
@@ -86,7 +89,7 @@
         return this;
     }
     d3x.prototype.name = function(getName){
-        this.__getName = getName;
+        if(getName) this.__getName = getName;
         if(!this._getName){
             var that = this;
             this._getName = function(d,i){
