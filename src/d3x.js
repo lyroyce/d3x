@@ -416,13 +416,14 @@
         }
         this._nameTickSpacing = this._data.length<=1 ? maxRange : (maxRange / this._data.length);
         this._nameAxis.scale(this._nameScale).orient(orient).ticks(this._data.length);
-        var that = this;
-        this.selectAll("g.name.axis").transition().duration(500).call(this._nameAxis)
+        var that = this,
+            textTooLong = false,
+            tickText = this.selectAll("g.name.axis").transition().duration(500).call(this._nameAxis)
             .selectAll(".tick text").style('fill',this.getColor(2)).each(function(){
                 if(orient=="bottom" && this.clientWidth>=that._nameTickSpacing)
-                    d3.select(this).style("text-anchor", "end")
-                        .attr("transform", "rotate(-60)");
-            });
+                    textTooLong = textTooLong || true;
+            })
+        if(textTooLong) tickText.style("text-anchor", "end").attr("transform", "rotate(-60)");;
         return this;
     }
     d3x.prototype._calcAxisPosition = function(orient){
