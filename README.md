@@ -1,7 +1,7 @@
 d3x
 ===
 
-A chart library based on d3.
+A object-oriented charting library based on d3.
 
 Example
 -------
