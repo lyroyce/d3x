@@ -10,7 +10,6 @@
     }
     d3x.prototype.size = function(width, height){
         if(this._container) this._container.attr("width", width).attr("height", height);
-        this._updateCanvasSize();
         return this;
     }
     d3x.prototype.margin = function(top, right, bottom, left){
@@ -18,27 +17,22 @@
         if(right) this._margin.right = right;
         if(bottom) this._margin.bottom = bottom;
         if(left) this._margin.left = left;
-        this._updateCanvasSize();
         return this;
     }
     d3x.prototype.marginTop = function(top){
         this._margin.top = top;
-        this._updateCanvasSize();
         return this;
     }
     d3x.prototype.marginRight = function(right){
         this._margin.right = right;
-        this._updateCanvasSize();
         return this;
     }
     d3x.prototype.marginBottom = function(bottom){
         this._margin.bottom = bottom;
-        this._updateCanvasSize();
         return this;
     }
     d3x.prototype.marginLeft = function(left){
         this._margin.left = left;
-        this._updateCanvasSize();
         return this;
     }
     d3x.prototype.prependTo = function(parent){
@@ -52,7 +46,6 @@
         this._svg = this._container[0][0];
         this._canvas = this._container.append("g").classed("canvas", true);
         this._canvas.append('g').classed('elements', true);
-        this._updateCanvasSize();
         return this;
     }
     d3x.prototype._updateCanvasSize = function(){
@@ -203,6 +196,7 @@
         }
     }
     d3x.prototype._render = function(){
+        this._updateCanvasSize();
         this._updateNameAxis();
         this._updateValueAxis();
         this.selectAll(".axis path, .axis line").style("fill", "none").style('stroke', this.getColor(1));
@@ -268,8 +262,8 @@
         this._tooltip.transition().delay(delay+500).style("visibility", 'hidden');
     }
     d3x.prototype.hbar = function(){
-        this._nameAxisOptions = {orient: "left", maxRange: this._canvasSize.height};
-        this._valueAxisOptions = {orient: "bottom", maxRange: this._canvasSize.width};
+        this._nameAxisOptions = {orient: "left"};
+        this._valueAxisOptions = {orient: "bottom"};
     
         var that = this;
         this._onEnter = function(element, background){
@@ -304,8 +298,8 @@
         return this;
     }
     d3x.prototype.vbar = function(){
-        this._nameAxisOptions = {orient: "bottom", maxRange: this._canvasSize.width};
-        this._valueAxisOptions = {orient: "left", maxRange: this._canvasSize.height};
+        this._nameAxisOptions = {orient: "bottom"};
+        this._valueAxisOptions = {orient: "left"};
         var that = this;
         this._onEnter = function(element, background){
             background.attr("height", that._canvasSize.height);
@@ -340,8 +334,8 @@
         return this;
     }
     d3x.prototype.line = function(){
-        this._nameAxisOptions = {orient: "bottom", maxRange: this._canvasSize.width, tryLinear: "linear"};
-        this._valueAxisOptions = {orient: "left", maxRange: this._canvasSize.height};
+        this._nameAxisOptions = {orient: "bottom", tryLinear: "linear"};
+        this._valueAxisOptions = {orient: "left"};
         var that = this;
         this._pointRadius = 8 * that._ratio;
         this._onEnter = function(element, background){
@@ -382,7 +376,7 @@
     }
     d3x.prototype._updateValueAxis = function(){
         var orient = this._valueAxisOptions.orient;
-        var maxRange = this._valueAxisOptions.maxRange;
+        var maxRange = (orient=='bottom'||orient=='top')?this._canvasSize.width:this._canvasSize.height;
         if(!this._valueAxis){
             this._valueAxis = d3.svg.axis();
             if(this._valueAxisEnabled) this._appendAxis(orient, "value axis", this._valueLabel);
@@ -399,7 +393,7 @@
     }
     d3x.prototype._updateNameAxis = function(){
         var orient = this._nameAxisOptions.orient;
-        var maxRange = this._nameAxisOptions.maxRange;
+        var maxRange = (orient=='bottom'||orient=='top')?this._canvasSize.width:this._canvasSize.height;
         var tryLinear = this._nameAxisOptions.tryLinear;
         if(!this._nameAxis){
             this._nameAxis = d3.svg.axis();
