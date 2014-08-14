@@ -19,9 +19,8 @@ Example
             .value(function(d,i){return d.count;})
             .nameAxis(true, 'Name')
             .valueAxis(true, 'Count')
-            .margin(50, 20, 50, 50)
             .title("My Horizontal Bar")
-            .colors("orange")
+            .colors("darkorange", "lightgray", "dimgray", "#333")
             .refresh(5000)
             .vbar();
             
@@ -58,26 +57,6 @@ API
     - **size(width, height)**
 
         Set the width and height of the chart.
-
-    - **margin(top, right, bottom, left)**
-
-        Set the margin of the chart.
-
-    - **marginTop(top)**
-
-        Set the margin of the chart.
-
-    - **marginRight(right)**
-
-        Set the margin of the chart.
-
-    - **marginBottom(bottom)**
-
-        Set the margin of the chart.
-
-    - **marginLeft(left)**
-
-        Set the margin of the chart.
 
 - Display & Effect
 
@@ -128,6 +107,8 @@ API
         Inserts a new element with the specified name before the element matching the specified before selector.
    
 - Chart Type     
+    
+    **NOTE**: Chart Type API has to be called at the end of the method chain.
 
     - **hbar()**
         
