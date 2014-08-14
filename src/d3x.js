@@ -1,6 +1,5 @@
 !function() {
     var d3x = function(selector){
-        this._margin = {top:20, right:20, bottom:20, left:20};
         this._data = [];
         this._renderer = null;
         this._colors = ["darkorange"];
@@ -12,29 +11,6 @@
         if(this._container) this._container.attr("width", width).attr("height", height);
         return this;
     }
-    d3x.prototype.margin = function(top, right, bottom, left){
-        if(top) this._margin.top = top;
-        if(right) this._margin.right = right;
-        if(bottom) this._margin.bottom = bottom;
-        if(left) this._margin.left = left;
-        return this;
-    }
-    d3x.prototype.marginTop = function(top){
-        this._margin.top = top;
-        return this;
-    }
-    d3x.prototype.marginRight = function(right){
-        this._margin.right = right;
-        return this;
-    }
-    d3x.prototype.marginBottom = function(bottom){
-        this._margin.bottom = bottom;
-        return this;
-    }
-    d3x.prototype.marginLeft = function(left){
-        this._margin.left = left;
-        return this;
-    }
     d3x.prototype.prependTo = function(parent){
         return this._newSvg(parent, ":first-child");
     }
@@ -44,17 +20,64 @@
     d3x.prototype._newSvg = function(parent, before){
         this._container = d3.select(parent).insert("svg", before).classed("chart", true);
         this._svg = this._container[0][0];
+        this._fontSize = parseFloat(getComputedStyle(this._svg).fontSize);
         this._canvas = this._container.append("g").classed("canvas", true);
         this._canvas.append('g').classed('elements', true);
         return this;
     }
     d3x.prototype._updateCanvasSize = function(){
+        this._calcMargin();
         if(this._svg && this._canvas){
             var clientWidth = this._svg.clientWidth || window.getComputedStyle(this._svg).width.slice(0, -2),
                 clientHeight = this._svg.clientHeight || window.getComputedStyle(this._svg).height.slice(0, -2);
-            this._canvasSize = {width: clientWidth-this._margin.left-this._margin.right, 
-                height: clientHeight-this._margin.top-this._margin.bottom};
+            this._canvasSize = {
+                width: clientWidth-this._margin.left-this._margin.right, 
+                height: clientHeight-this._margin.top-this._margin.bottom
+            };
             this._canvas.attr("transform", "translate(" + this._margin.left + "," + this._margin.top + ")");
+        }
+    }
+    d3x.prototype._maxNameWidth = function(){
+        var maxWidth = 0;
+        if(this._data){
+            var temp = document.body.appendChild(document.createElement('div'));
+            temp.style.opacity = 0;
+            temp.style.fontSize = "" + this._fontSize + "px";
+            temp.style.position = "absolute";
+            var that = this;
+            this._data.forEach(function(d, i){
+                temp.innerHTML = that._getName(d, i);
+                maxWidth = Math.max(maxWidth, temp.clientWidth);
+            });
+            document.body.removeChild(temp);
+        }
+        return maxWidth;
+    }
+    d3x.prototype._calcMargin = function(orient, diff){
+        this._margin = {top:10, right:10, bottom:10, left:10};
+        if(this._titleLabel) this._margin.top += this._fontSize;      
+        if(this._valueLabel) this._margin[this._valueAxisOptions.orient] += this._fontSize * 2;
+        if(this._nameLabel) this._margin[this._nameAxisOptions.orient] += this._fontSize * 2;
+        if(this._valueAxisEnabled){
+            this._margin[this._valueAxisOptions.orient] += this._fontSize;
+            if(this._valueTickEnabled)this._margin[this._valueAxisOptions.orient] += 6;
+        }  
+        if(this._nameAxisEnabled){
+            var maxNameWidth = this._maxNameWidth();
+            if(this._nameAxisOptions.orient=='left' || this._nameAxisOptions.orient=='right'){
+                this._margin[this._nameAxisOptions.orient] += maxNameWidth;
+            }else{
+                var maxRange = this._svg.clientWidth || window.getComputedStyle(this._svg).width.slice(0, -2);
+                var nameTickSpacing = this._data.length<=1 ? maxRange : (maxRange / this._data.length);
+                if(maxNameWidth>nameTickSpacing){
+                    this._nameTextTooLong = true;
+                    this._margin[this._nameAxisOptions.orient] += maxNameWidth * 0.87;
+                }else{
+                    this._nameTextTooLong = false;
+                    this._margin[this._nameAxisOptions.orient] += this._fontSize;
+                }
+            }
+            if(this._nameTickEnabled)this._margin[this._nameAxisOptions.orient] += 6;
         }
     }
     d3x.prototype.data = function(data, dataLoaded){
@@ -376,13 +399,15 @@
     }
     d3x.prototype._updateValueAxis = function(){
         var orient = this._valueAxisOptions.orient;
-        var maxRange = (orient=='bottom'||orient=='top')?this._canvasSize.width:this._canvasSize.height;
         if(!this._valueAxis){
             this._valueAxis = d3.svg.axis();
-            if(this._valueAxisEnabled) this._appendAxis(orient, "value axis", this._valueLabel);
             if(!this._valueTickEnabled) this._valueAxis.tickSize(0, 0);
         }
-        var range = (orient=='left'||orient=="right")?[maxRange,0]:[0,maxRange];
+        if(this._valueAxisEnabled){
+            this._updateAxis(orient, "value", this._valueLabel);
+        }
+        var maxRange = (orient=='bottom'||orient=='top')?this._canvasSize.width:this._canvasSize.height;
+        var range = (orient=='bottom'||orient=='top')?[0,maxRange]:[maxRange,0];
         this._valueScale = d3.scale.linear()
             .domain([0, d3.max(this._data, this._getValue)])
             .range(range);
@@ -393,13 +418,15 @@
     }
     d3x.prototype._updateNameAxis = function(){
         var orient = this._nameAxisOptions.orient;
-        var maxRange = (orient=='bottom'||orient=='top')?this._canvasSize.width:this._canvasSize.height;
         var tryLinear = this._nameAxisOptions.tryLinear;
         if(!this._nameAxis){
             this._nameAxis = d3.svg.axis();
-            if(this._nameAxisEnabled) this._appendAxis(orient, "name axis", this._nameLabel);
             if(!this._nameTickEnabled) this._nameAxis.tickSize(0, 0);
         }
+        if(this._nameAxisEnabled){
+            this._updateAxis(orient, "name", this._nameLabel);
+        }
+        var maxRange = (orient=='bottom'||orient=='top')?this._canvasSize.width:this._canvasSize.height;
         var maxDomain = d3.max(this._data, this._getName);
         if(tryLinear && typeof(maxDomain) == "number"){
             this._nameScale = d3.scale.linear().domain([0, maxDomain]).range([0, maxRange]);
@@ -410,43 +437,45 @@
         }
         this._nameTickSpacing = this._data.length<=1 ? maxRange : (maxRange / this._data.length);
         this._nameAxis.scale(this._nameScale).orient(orient).ticks(this._data.length);
-        var that = this,
-            textTooLong = false,
-            tickText = this.selectAll("g.name.axis").transition().duration(500).call(this._nameAxis)
-            .selectAll(".tick text").style('fill',this.getColor(2)).each(function(){
-                if(orient=="bottom" && this.clientWidth>=that._nameTickSpacing)
-                    textTooLong = textTooLong || true;
-            })
-        if(textTooLong) tickText.style("text-anchor", "end").attr("transform", "rotate(-60)");;
+        var tickText = this.selectAll("g.name.axis").transition().duration(500).call(this._nameAxis)
+            .selectAll(".tick text").style('fill',this.getColor(2));
+        if(this._nameTextTooLong) tickText.style("text-anchor", "end").attr("transform", "rotate(-60)");
+        else tickText.style("text-anchor", "middle").attr("transform", null);
         return this;
     }
-    d3x.prototype._calcAxisPosition = function(orient){
+    d3x.prototype._updateAxis = function(orient, classed, label){
+        var axis = this.selectOrAppend("g.axis."+classed, "g").attr("class", "axis "+classed);
+        this._updateAxisLabel(axis, orient, label);
         switch (orient) {
-            case "bottom":
-                return "0,"+this._canvasSize.height;
+            case "top":
+                axis.attr("transform", "translate(0,0)");
+                break;
             case "right":
-                return this._canvasSize.width+",0";
-            default:
-                return "0,0";
+                axis.attr("transform", "translate("+this._canvasSize.width+",0)");
+                break;
+            case "bottom":
+                axis.attr("transform", "translate(0,"+this._canvasSize.height + ")");
+                break;
+            case "left":
+                axis.attr("transform", "translate(0,0)");
+                break;
         }
     }
-    d3x.prototype._appendAxis = function(orient, classed, label){
-        var axis = this.append("g")
-            .attr("class", classed)
-            .attr("transform", "translate(" + this._calcAxisPosition(orient) + ")");
+    d3x.prototype._updateAxisLabel = function(axis, orient, label){
         if(label){
-            var labelElement = axis.append("text").text(label)
-                .style("text-anchor", "middle").style('fill', this.getColor(3));
+            var labelElement = axis.select("text");
+            if(labelElement.size()==0) labelElement = axis.append("text");
+            labelElement.text(label).style("text-anchor", "middle").style('fill', this.getColor(3));
             switch (orient) {
                 case "bottom":
                     return labelElement.attr("x", this._canvasSize.width/2)
-                        .attr("y", 10)
-                        .attr("dy", "2em");
+                        .attr("y", this._margin.bottom)
+                        .attr("dy", "-1.5em");
                 case "left":
                     return labelElement.attr("transform", "rotate(-90)")
                         .attr("x", -this._canvasSize.height/2)
-                        .attr("y", -10)
-                        .attr("dy", "-2em");
+                        .attr("y", -this._margin.left)
+                        .attr("dy", "1.5em");
                 case "top":
                     return labelElement.attr("x", this._canvasSize.width/2)
                         .attr("y", -10)
