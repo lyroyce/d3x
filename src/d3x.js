@@ -64,9 +64,7 @@
         }  
         if(this._nameAxisEnabled){
             var maxNameWidth = this._maxNameWidth();
-            if(this._nameAxisOptions.orient=='left' || this._nameAxisOptions.orient=='right'){
-                this._margin[this._nameAxisOptions.orient] += maxNameWidth;
-            }else{
+            if(this._nameAxisOptions.orient=="bottom" || this._nameAxisOptions.orient=="top"){
                 var maxRange = this._svg.clientWidth || window.getComputedStyle(this._svg).width.slice(0, -2);
                 var nameTickSpacing = this._data.length<=1 ? maxRange : (maxRange / this._data.length);
                 if(maxNameWidth>nameTickSpacing){
@@ -76,6 +74,8 @@
                     this._nameTextTooLong = false;
                     this._margin[this._nameAxisOptions.orient] += this._fontSize;
                 }
+            }else{
+                this._margin[this._nameAxisOptions.orient] += maxNameWidth;
             }
             if(this._nameTickEnabled)this._margin[this._nameAxisOptions.orient] += 6;
         }
@@ -426,7 +426,7 @@
         if(this._nameAxisEnabled){
             this._updateAxis(orient, "name", this._nameLabel);
         }
-        var maxRange = (orient=='bottom'||orient=='top')?this._canvasSize.width:this._canvasSize.height;
+        var maxRange = (orient=="bottom"||orient=="top")?this._canvasSize.width:this._canvasSize.height;
         var maxDomain = d3.max(this._data, this._getName);
         if(tryLinear && typeof(maxDomain) == "number"){
             this._nameScale = d3.scale.linear().domain([0, maxDomain]).range([0, maxRange]);
@@ -439,8 +439,10 @@
         this._nameAxis.scale(this._nameScale).orient(orient).ticks(this._data.length);
         var tickText = this.selectAll("g.name.axis").transition().duration(500).call(this._nameAxis)
             .selectAll(".tick text").style('fill',this.getColor(2));
-        if(this._nameTextTooLong) tickText.style("text-anchor", "end").attr("transform", "rotate(-60)");
-        else tickText.style("text-anchor", "middle").attr("transform", null);
+        if(orient=="bottom" || orient=="top"){
+            if(this._nameTextTooLong) tickText.style("text-anchor", "end").attr("transform", "rotate(-60)");
+            else tickText.style("text-anchor", "middle").attr("transform", null);
+        }
         return this;
     }
     d3x.prototype._updateAxis = function(orient, classed, label){
