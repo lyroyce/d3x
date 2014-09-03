@@ -114,17 +114,17 @@ API
    
 - Chart Type     
     
-    **NOTE**: Chart Type API has to be called at the end of the method chain.
+    Please note that Chart Type API has to be called at the end of the method chain.
 
     - **hbar()**
         
-        Render a horizontal bar chart.
+        Renders a horizontal bar chart.
         
     - **vbar()**
     
-        Render a vertical bar chart.
+        Renders a vertical bar chart.
         
     - **line()**
     
-        Render a line chart.
+        Renders a line chart.
         
