@@ -249,7 +249,13 @@
             d3.select(this).select("circle.point").attr("r", that._pointRadius);
         }).on('mousemove', function(d, i){
             that._showTooltip(d, i);
+        }).on('click', function(d, i){
+            if(typeof that._onClick === 'function')
+                that._onClick(that._getName(d, i), that._getValue(d, i), d3.event);
         });
+    }
+    d3x.prototype.click = function(onClick){
+        this._onClick = onClick;
     }
     d3x.prototype._appendTitle = function(){
         this._titleElement = this.append("text").classed("title", true)
@@ -311,8 +317,8 @@
         this._tooltipPoint = function(d, i, width, height, offset){
             var x = that._scaleValue()(d,i),
                 y = that._scaleName(that._nameTickSpacing/2)(d,i);
-            if(x + width + offset > that._canvasSize.width) x = that._canvasSize.width - width;
-            else x = x + offset;
+            if(x + width + offset <= that._canvasSize.width) x = x + offset;
+            else x = that._canvasSize.width - width - offset;
             if(y - height/2 < 0) y = 0;
             else y = y - height/2;
             return {x: x, y: y};
@@ -349,8 +355,8 @@
                 y = that._scaleValue()(d,i);
             if(x + width/2 > that._canvasSize.width) x = that._canvasSize.width - width;
             else x = x - width/2;
-            if(y - height - offset < 0) y = 0;
-            else y = y - height - offset;
+            if(y - height - offset >= 0) y = y - height - offset;
+            else y = y + offset;
             return {x: x, y: y};
         }
         this.refresh();
@@ -390,8 +396,8 @@
                 y = that._scaleValue()(d,i);
             if(x + width/2 > that._canvasSize.width) x = that._canvasSize.width - width;
             else x = x - width/2;
-            if(y - height - offset < 0) y = 0;
-            else y = y - height - offset;
+            if(y - height - offset >= 0) y = y - height - offset;
+            else y = y + offset;
             return {x: x, y: y};
         }
         this.refresh();
