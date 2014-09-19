@@ -69,7 +69,7 @@
                 var nameTickSpacing = this._data.length<=1 ? maxRange : (maxRange / this._data.length);
                 if(maxNameWidth>nameTickSpacing){
                     this._nameTextTooLong = true;
-                    this._margin[this._nameAxisOptions.orient] += maxNameWidth * 0.87;
+                    this._margin[this._nameAxisOptions.orient] += maxNameWidth * Math.sin(Math.PI * 60 / 180);
                 }else{
                     this._nameTextTooLong = false;
                     this._margin[this._nameAxisOptions.orient] += this._fontSize;
