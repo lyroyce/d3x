@@ -226,6 +226,7 @@
     
         this.elements().exit().style("opacity", 1).remove(); // remove immediately
         var element = this.elements().enter().append("g").classed("element",true);
+        if(this._onClick) element.style("cursor", "pointer");
         var background = element.append("rect").classed("background", true).style("fill-opacity", "0");
         this._onEnter(element, background);
         this._onRender(this.elements(), this.elements().select("rect.background"));
@@ -263,7 +264,7 @@
             .attr("x", this._canvasSize.width/2).attr("y", "-1em").text(this._titleLabel);
     }
     d3x.prototype._appendTooltip = function(){
-        this._tooltip = this.append("g").classed("tooltip", true).style("opacity", 0);
+        this._tooltip = this.append("g").classed("tooltip", true).style("opacity", 0).style("pointer-events", "none");
         this._tooltip.padding = {left: 10, top: 20};
         this._tooltip.append("rect").classed("background", true).style("fill", "#555")
             .attr("x", 0).attr("y", 0).attr("height", 60);
