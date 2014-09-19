@@ -445,8 +445,8 @@
         this._nameAxis.scale(this._nameScale).orient(orient).ticks(this._data.length);
         var tickText = this.selectAll("g.name.axis").transition().duration(500).call(this._nameAxis)
             .selectAll(".tick text").style('fill',this.getColor(2));
-        if(orient=="bottom" || orient=="top"){
-            if(this._nameTextTooLong) tickText.style("text-anchor", "end").attr("transform", "rotate(-60)");
+        if(orient=="bottom"){
+            if(this._nameTextTooLong) tickText.style("text-anchor", "end").attr("transform", "rotate(-60)").attr("x",'-.5em').attr("y",'0');
             else tickText.style("text-anchor", "middle").attr("transform", null);
         }
         return this;
