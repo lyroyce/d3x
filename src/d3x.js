@@ -5,7 +5,15 @@
         this._colors = ["darkorange"];
         this._ratio = 0.6;
         this._canvasSize = {};
+        this._userMargin = {top:10, right:10, bottom:10, left:10};
         if(selector) this.appendTo(selector);
+    }
+    d3x.prototype.margin = function(top, right, bottom, left){
+        this._userMargin.top = top;
+        this._userMargin.right = right;
+        this._userMargin.bottom = bottom;
+        this._userMargin.left = left;
+        return this;
     }
     d3x.prototype.size = function(width, height){
         if(this._container) this._container.attr("width", width).attr("height", height);
@@ -54,7 +62,7 @@
         return maxWidth;
     }
     d3x.prototype._calcMargin = function(orient, diff){
-        this._margin = {top:10, right:10, bottom:10, left:10};
+        this._margin = Object.create(this._userMargin);
         if(this._titleLabel) this._margin.top += this._fontSize;      
         if(this._valueLabel) this._margin[this._valueAxisOptions.orient] += this._fontSize * 2;
         if(this._nameLabel) this._margin[this._nameAxisOptions.orient] += this._fontSize * 2;
