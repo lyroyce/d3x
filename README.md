@@ -58,6 +58,10 @@ API
 
         Sets the width and height of the chart.
 
+    - **margin(top, right, bottom, left)**
+
+        Sets the base margin of the chart. The actual margin will be calculated when rendered.
+
 - Display & Effect
 
     - **color(chartColor, axisColor, tickTextColor, LabelColor)**
